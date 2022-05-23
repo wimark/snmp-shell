@@ -1,6 +1,8 @@
 # SNMP Shell
 ### Shell Simulation over Net-SNMP with extend functionality
 
+All thanks and regards to [mxrch](https://github.com/mxrch).
+
 Here is a preview :\
 \
 ![Screenshot](https://user-images.githubusercontent.com/17338428/86642223-083ac100-bfdc-11ea-85da-2cece511534d.PNG)
@@ -11,6 +13,14 @@ If your target has a **Net-SNMP** instance with the **"extend"** functionality, 
 The tool automatically put you in your path to **simulate a real shell**.\
 You can also use all the commands you can imagine, apart those requiring a fully interactive shell (MySQL, Vim, Nano, etc.)\
 *Not compatible Windows, sorry.*
+
+## Prereqs
+To run on OpenWRT you need configured [snmpd](https://openwrt.org/packages/pkgdata/snmpd) and next packages:
+```bash
+opkg update
+opkg install coreutils-whoami coreutils-base64
+```
+
 
 ## Installation (Linux)
 ```bash

