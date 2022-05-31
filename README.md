@@ -25,7 +25,7 @@ opkg install coreutils-whoami coreutils-base64
 ## Installation (Linux)
 ```bash
 sudo apt install snmp snmp-mibs-downloader rlwrap -y
-git clone https://github.com/mxrch/snmp-shell
+git clone https://github.com/wimark/snmp-shell
 cd snmp-shell
 sudo python3 -m pip install -r requirements.txt
 ```
